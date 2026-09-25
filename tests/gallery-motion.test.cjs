@@ -6,7 +6,43 @@ const vm = require('node:vm');
 
 const script = fs.readFileSync(path.join(__dirname, '../dist/gallery-motion.js'), 'utf8');
 const css = fs.readFileSync(path.join(__dirname, '../dist/gallery-motion.css'), 'utf8');
+const baseCss = fs.readFileSync(path.join(__dirname, '../dist/front-experience.css'), 'utf8');
+const html = fs.readFileSync(path.join(__dirname, '../dist/index.html'), 'utf8');
 const properties = ['--card-rx', '--card-ry', '--photo-x', '--photo-y'];
+
+function mediaBody(source, query) {
+  const start = source.indexOf(`@media${query}`);
+  assert.notEqual(start, -1, `missing media rule ${query}`);
+  const open = source.indexOf('{', start);
+  let depth = 1;
+  for (let i = open + 1; i < source.length; i++) {
+    if (source[i] === '{') depth++;
+    if (source[i] === '}' && --depth === 0) return source.slice(open + 1, i);
+  }
+  assert.fail(`unclosed media rule ${query}`);
+}
+
+function ruleBody(source, selector) {
+  const clean = source.replace(/\/\*[\s\S]*?\*\//g, '');
+  for (const [, selectors, body] of clean.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
+    if (selectors.trim().split(',').map(value => value.trim()).includes(selector)) return body;
+  }
+  assert.fail(`missing CSS selector ${selector}`);
+}
+
+function minHeight(source, selector = '.moments .moment-card') {
+  const match = ruleBody(source, selector).match(/(?:^|;)\s*min-height:([^;]+)/);
+  assert.ok(match, `missing min-height on ${selector}`);
+  return match[1].trim();
+}
+
+function pixels(value, viewport) {
+  const plain = value.match(/^(\d+(?:\.\d+)?)px$/);
+  if (plain) return Number(plain[1]);
+  const clamp = value.match(/^clamp\((\d+)px,\s*(\d+)vw,\s*(\d+)px\)$/);
+  assert.ok(clamp, `expected a bounded fluid height, got ${value}`);
+  return Math.max(Number(clamp[1]), Math.min(viewport * Number(clamp[2]) / 100, Number(clamp[3])));
+}
 
 function harness({ count = 7, reduced = false, fine = true, hidden = false, saved = {} } = {}) {
   class Target {
@@ -248,4 +284,77 @@ test('CSS keeps captions visible, supplies touch feedback, and disables transfor
   assert.match(reduced, /transition:none!important/);
   assert.match(reduced, /transform:none!important;scale:none!important/);
   assert.match(reduced, /translate:none!important/);
+});
+
+test('larger photos retain the desktop 2 / 3 / 2 grid and seven original linked stories', () => {
+  assert.match(baseCss, /\.moments-grid\{grid-template-columns:repeat\(6,minmax\(0,1fr\)\)\}/);
+  assert.match(baseCss, /\.moment-card\{grid-column:span 2\}/);
+  assert.match(baseCss, /\.moment-card:nth-child\(-n\+2\)\{grid-column:span 3\}/);
+  assert.match(baseCss, /\.moment-card:nth-last-child\(-n\+2\)\{grid-column:span 3\}/);
+  const desktop = css.slice(0, css.indexOf('@media'));
+  assert.doesNotMatch(desktop, /\bgrid-template-columns\s*:|\bgrid-column\s*:|\border\s*:/);
+  const cards = [...html.matchAll(/<a\b([^>]*class="[^"]*\bmoment-card\b[^"]*"[^>]*)>([\s\S]*?)<\/a>/g)];
+  assert.equal(cards.length, 7);
+  assert.deepEqual(cards.map(([, attrs]) => Number(attrs.match(/data-feature-jump="(\d+)"/)[1])), [3, 1, 2, 3, 1, 3, 3]);
+  assert.deepEqual(cards.map(([, , body]) => body.match(/<h3>([\s\S]*?)<\/h3>/)[1].replace(/<br\s*\/?\s*>/g, '')), [
+    '它的小问号，值得认真回答。', '放松的日常，也值得好好记录。', '每一口，都是关心。',
+    '窗边的小心思。', '陪它，慢慢晒太阳。', '伸个爪，回应你。', '给它一点自己的空间。'
+  ]);
+  for (const [, attrs, body] of cards) {
+    assert.match(attrs, /href="#abilities"/);
+    assert.equal((body.match(/class="moment-copy"/g) || []).length, 1);
+    assert.match(body, /<p>[^<]+<b aria-hidden="true">↗<\/b><\/p>/);
+  }
+});
+
+test('desktop photo viewports grow within bounded fluid heights without fixing text height', () => {
+  const desktop = css.slice(0, css.indexOf('@media'));
+  const regular = minHeight(desktop);
+  const first = minHeight(desktop, '.moments .moment-card:nth-child(-n+2)');
+  const last = minHeight(desktop, '.moments .moment-card:nth-last-child(-n+2)');
+  assert.equal(regular, 'clamp(440px,36vw,560px)');
+  assert.equal(first, 'clamp(500px,42vw,640px)');
+  assert.equal(last, first);
+  for (const [width, expectedRegular, expectedWide] of [[801, 440, 500], [1100, 440, 500], [1440, 518.4, 604.8], [1920, 560, 640]]) {
+    assert.equal(pixels(regular, width), expectedRegular);
+    assert.equal(pixels(first, width), expectedWide);
+    assert.ok(pixels(first, width) > pixels(regular, width));
+  }
+  for (const selector of ['.moments .moment-card', '.moments .moment-card:nth-child(-n+2)', '.moments .moment-card:nth-last-child(-n+2)']) {
+    assert.doesNotMatch(ruleBody(desktop, selector), /(?:^|;)(?:height|max-height):/);
+  }
+});
+
+test('tablet and phone height overrides preserve the established responsive columns', () => {
+  const tablet = mediaBody(css, '(max-width:800px)');
+  const phone = mediaBody(css, '(max-width:600px)');
+  assert.ok(css.indexOf('@media(max-width:600px)') > css.indexOf('@media(max-width:800px)'));
+  for (const selector of ['.moments .moment-card', '.moments .moment-card:nth-child(-n+2)', '.moments .moment-card:nth-last-child(-n+2)']) {
+    assert.equal(minHeight(tablet, selector), '420px');
+    assert.equal(minHeight(phone, selector), 'clamp(410px,110vw,480px)');
+    assert.match(ruleBody(phone, selector), /(?:^|;)grid-column:span 1(?:;|$)/);
+    assert.doesNotMatch(ruleBody(phone, selector), /(?:^|;)(?:height|max-height):/);
+  }
+  assert.doesNotMatch(tablet, /grid-template-columns:/, 'the gallery override must not alter the existing tablet grid');
+  assert.match(ruleBody(phone, '.moments .moments-grid'), /grid-template-columns:minmax\(0,1fr\)/);
+  for (const [width, expected] of [[320, 410], [375, 412.5], [390, 429], [430, 473], [480, 480], [600, 480]]) {
+    assert.equal(pixels(minHeight(phone), width), expected);
+  }
+  assert.equal(pixels(minHeight(tablet), 601), 420);
+  assert.equal(pixels(minHeight(tablet), 800), 420);
+});
+
+test('larger cropped photos have individual cat focal points and untruncated caption overlays', () => {
+  assert.match(ruleBody(css, '.moments .moment-image'), /position:absolute;inset:0;width:100%;height:100%/);
+  assert.match(ruleBody(css, '.moments .moment-image img'), /object-fit:cover/);
+  for (const [index, focal] of [[3, '60% center'], [4, '56% center'], [5, '63% center']]) {
+    assert.ok(ruleBody(css, `.moments .moment-card:nth-child(${index}) img`).includes(`object-position:${focal}`));
+  }
+  const overlay = ruleBody(css, '.moments .moment-card:before');
+  assert.match(overlay, /#0e243200 28%,#0e24321a 48%,#0e2432b8 76%,#0e2432f2 100%/);
+  const copy = ruleBody(css, '.moments .moment-copy');
+  assert.match(copy, /position:relative;z-index:2;align-self:end/);
+  assert.match(copy, /padding:24px 28px/);
+  assert.doesNotMatch(css, /(?:line-clamp|text-overflow|white-space:nowrap)/);
+  assert.doesNotMatch(copy, /(?:^|;)(?:height|max-height|overflow):/);
 });
