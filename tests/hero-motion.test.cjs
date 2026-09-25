@@ -35,6 +35,7 @@ function harness({ width = 900, height = 700, actorSize = 470, reduced = false, 
     }
     removeEventListener(name, fn) { this.listeners.get(name)?.delete(fn); }
     emit(name, props = {}) { for (const fn of this.listeners.get(name) || []) fn(props); }
+    dispatchEvent(event) { this.emit(event.type, event); }
     get listenerCount() { return [...this.listeners.values()].reduce((sum, set) => sum + set.size, 0); }
   }
   const ids = Object.fromEntries(['cinemaStage', 'stageCamera', 'actors', 'filmLoading', 'heroMotionToggle']
@@ -59,7 +60,7 @@ function harness({ width = 900, height = 700, actorSize = 470, reduced = false, 
     clearTimeout(id) { timers.delete(id); }
   };
   vm.runInNewContext(script, {
-    document, window, Image, IntersectionObserver: Observer, ResizeObserver: Observer,
+    document, window, Image, Event: class { constructor(type) { this.type = type; } }, IntersectionObserver: Observer, ResizeObserver: Observer,
     matchMedia: query => query.includes('reduced-motion') ? reduceMedia : fineMedia,
     requestAnimationFrame(fn) { const id = ++sequence; raf.set(id, fn); return id; },
     cancelAnimationFrame(id) { raf.delete(id); }
@@ -115,6 +116,8 @@ for (const viewport of [
     assert.equal(h.body.children[0].style.opacity, '1');
     h.advance(7.5);
     assert.ok(Math.abs(Number(h.ids.cinemaStage.dataset.heroYaw) - 7) < .01);
+    assert.ok(Math.abs(Number(h.ids.cinemaStage.dataset.heroDrift) - 12) < .01);
+    assert.ok(Math.abs(Number(h.ids.cinemaStage.dataset.heroLift)) < .01);
     h.advance(30);
     assert.ok(Math.abs(Number(h.ids.cinemaStage.dataset.heroYaw) - 7) < .01);
     assert.equal(h.raf.size, 1);
@@ -173,6 +176,8 @@ test('reduced motion is static, full-body, and ignores pointer and resume reques
   assert.equal(h.ids.cinemaStage.dataset.motion, 'reduced');
   assert.equal(h.ids.cinemaStage.dataset.heroScale, '1.00000');
   assert.equal(h.ids.cinemaStage.dataset.heroYaw, '0.000');
+  assert.equal(h.ids.cinemaStage.dataset.heroDrift, '0.000');
+  assert.equal(h.ids.cinemaStage.dataset.heroLift, '0.000');
   assert.equal(h.ids.heroMotionToggle.disabled, true);
   assert.equal(h.raf.size, 0);
   const before = h.body.style.transform;

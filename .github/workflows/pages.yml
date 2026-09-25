@@ -28,6 +28,7 @@ jobs:
           node --check dist/cinematic.js
           node --check dist/app.js
           node --check dist/hero-motion.js
+          node --check dist/cat-life.js
           node --check dist/interaction-sound.js
           node --check dist/aero-experience.js
           node --check dist/aero-shards.js

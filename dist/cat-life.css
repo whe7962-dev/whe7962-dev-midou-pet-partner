@@ -1,0 +1,10 @@
+/* Closed-eye keyframe is confined to two feathered eye patches; the face never swaps. */
+.cat-life-overlay{position:absolute;pointer-events:none;z-index:3;display:block;overflow:visible;transform-style:preserve-3d}
+.cat-life-patch{position:absolute;display:block;background:url('assets/midou-blink.png') center/100% 100% no-repeat;opacity:0;pointer-events:none;
+  -webkit-mask-image:radial-gradient(ellipse 8.2% 8.5% at 38.3% 38.6%,#000 80%,transparent 100%),radial-gradient(ellipse 8.2% 8.5% at 61.9% 38.6%,#000 80%,transparent 100%);
+  mask-image:radial-gradient(ellipse 8.2% 8.5% at 38.3% 38.6%,#000 80%,transparent 100%),radial-gradient(ellipse 8.2% 8.5% at 61.9% 38.6%,#000 80%,transparent 100%)}
+.cat-life-overlay[data-blink='closed'] .cat-life-patch{opacity:1}
+.cat-life-moving,.cat-life-overlay.is-portrait{translate:var(--cat-drift-x,0px) calc(var(--cat-base-depth,0px) + var(--cat-drift-y,0px));rotate:var(--cat-sway,0deg);scale:var(--cat-breathe,1);will-change:translate,rotate,scale}
+.cat-life-overlay.is-hero{inset:0;z-index:1}
+.cat-life-overlay.is-static{will-change:auto}
+@media(prefers-reduced-motion:reduce){.cat-life-moving,.cat-life-overlay.is-portrait{translate:0 var(--cat-base-depth,0px);rotate:none;scale:none;will-change:auto}.cat-life-patch{display:none}}

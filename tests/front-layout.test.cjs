@@ -48,6 +48,40 @@ const inside = (node, parent) => {
 const contents = node => html.slice(node.contentStart, node.end);
 const text = node => contents(node).replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
 
+test('Pet Partner owns the page title, description and header/footer brand marks', () => {
+  const title = all.find(node => node.tag === 'title');
+  const description = all.find(node => node.tag === 'meta' && node.attrs.name === 'description');
+  assert.match(text(title), /^宠拍档\s*[—–-]/);
+  assert.match(description.attrs.content, /^宠拍档[，,]/);
+  assert.doesNotMatch(text(title) + description.attrs.content, /miDou|咪Dou/i);
+  const brand = all.find(node => node.tag === 'a' && hasClass(node, 'brand'));
+  assert.equal(brand.attrs['aria-label'], '宠拍档首页');
+  const marks = all.filter(node => hasClass(node, 'pet-wordmark'));
+  assert.equal(marks.length, 2);
+  marks.forEach(mark => assert.equal(text(mark), '宠拍档'));
+});
+
+test('the only primary heading leads with scientific pet care and Pet Partner', () => {
+  const headings = all.filter(node => node.tag === 'h1');
+  assert.equal(headings.length, 1);
+  assert.equal(headings[0].attrs.id, 'heroTitle');
+  assert.equal(text(headings[0]), '科学养宠，有宠拍档。');
+  assert.ok(inside(headings[0], byId('home')));
+});
+
+test('IDs are unique and ARIA control/label references resolve', () => {
+  const ids = all.filter(node => node.attrs.id).map(node => node.attrs.id);
+  assert.equal(new Set(ids).size, ids.length, `Duplicate IDs: ${ids.filter((id, index) => ids.indexOf(id) !== index).join(', ')}`);
+  for (const node of all) {
+    for (const attribute of ['aria-controls', 'aria-labelledby', 'aria-describedby']) {
+      if (!node.attrs[attribute]) continue;
+      for (const id of node.attrs[attribute].trim().split(/\s+/)) {
+        assert.ok(byId(id), `Unresolved ${attribute}="${id}" on ${node.tag}`);
+      }
+    }
+  }
+});
+
 test('core capabilities are the second main section, immediately after the hero', () => {
   const main = all.find(node => node.tag === 'main');
   assert.ok(main);
@@ -106,11 +140,18 @@ test('the capability demo contains a neutral record sheet instead of photo scann
   assert.match(html, /不能代替兽医诊断/);
 });
 
-test('two lifestyle photos are outside diagnosis UI and explicitly captioned as non-clinical', () => {
+test('all seven lifestyle photos are distinct, outside diagnosis UI and captioned as non-clinical', () => {
   const moments = byId('moments');
   assert.ok(moments);
   const images = all.filter(node => node.tag === 'img' && inside(node, moments));
-  assert.deepEqual(images.map(node => node.attrs.src).sort(), ['assets/daily-comfort.png', 'assets/daily-curiosity.png']);
+  assert.equal(images.length, 7);
+  assert.deepEqual(images.map(node => node.attrs.src).sort(), [
+    'assets/daily-comfort.png', 'assets/daily-curiosity.png', 'assets/daily-hideaway.png',
+    'assets/daily-mealtime.png', 'assets/daily-play.png', 'assets/daily-sunshine.png', 'assets/daily-window.png'
+  ]);
+  const cards = all.filter(node => hasClass(node, 'moment-card') && inside(node, moments));
+  assert.equal(cards.length, 7);
+  cards.forEach(card => assert.equal(images.filter(image => inside(image, card)).length, 1));
   for (const image of images) {
     assert.match(image.attrs.alt, /猫/);
     assert.doesNotMatch(image.attrs.alt, /医生|兽医|听诊|医疗|诊断|治疗|doctor|medical|diagnos|clinic/i);
@@ -128,6 +169,37 @@ test('two lifestyle photos are outside diagnosis UI and explicitly captioned as 
     assert.doesNotMatch(image.attrs.alt || '', /医生|兽医|听诊|诊疗|doctor|diagnos|clinic/i);
     assert.doesNotMatch(image.attrs.src || '', /doctor|medical|diagnos|codex-clipboard/i);
   }
+});
+
+test('shards share one content stage with three readable cards instead of a standalone demo', () => {
+  const technology = byId('technology');
+  const stage = byId('shardStage');
+  const field = byId('shardField');
+  assert.equal(technology.tag, 'section');
+  assert.ok(hasClass(technology, 'insight-section'));
+  assert.ok(hasClass(stage, 'shard-content-stage'));
+  assert.ok(inside(stage, technology));
+  assert.equal(field.parent, stage);
+  assert.equal(field.attrs['aria-hidden'], 'true');
+  const content = all.find(node => hasClass(node, 'insight-content') && node.parent === stage);
+  assert.ok(content);
+  assert.ok(stage.children.indexOf(field) < stage.children.indexOf(content));
+  assert.ok(inside(byId('insightTitle'), content));
+  const cards = all.filter(node => node.tag === 'article' && inside(node, content));
+  assert.equal(cards.length, 3);
+  assert.deepEqual(cards.map(card => text(all.find(node => node.tag === 'h3' && inside(node, card)))),
+    ['宠语翻译', '情绪识别', '多智能体管家']);
+  assert.ok(inside(byId('shardPause'), stage));
+  assert.ok(inside(byId('shardStatus'), stage));
+  assert.equal(all.filter(node => hasClass(node, 'shard-stage')).length, 1);
+  assert.equal(all.filter(node => node.tag === 'section' && hasClass(node, 'technology')).length, 0);
+  assert.equal(all.some(node => hasClass(node, 'shard-toolbar') || hasClass(node, 'shard-flow-controls') ||
+    'data-shard-flow' in node.attrs), false);
+  const stageRule = blockAfter(frontCSS, '.shard-content-stage{').replace(/\s+/g, '');
+  assert.match(stageRule, /(?:^|;)height:auto(?:;|$)/);
+  assert.match(stageRule, /min-height:0/);
+  assert.match(blockAfter(frontCSS, '.shard-content-stage .shard-field').replace(/\s+/g, ''), /z-index:0/);
+  assert.match(blockAfter(frontCSS, '.insight-content{').replace(/\s+/g, ''), /z-index:1/);
 });
 
 test('all local HTML, CSS and JavaScript asset/module references exist inside dist', () => {

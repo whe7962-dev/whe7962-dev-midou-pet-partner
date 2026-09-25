@@ -49,6 +49,7 @@
   let previousStamp = null;
   let raf = 0;
   let size = 1;
+  let introNotified = false;
   let bounds = { left: 0, top: 0, width: 1, height: 1 };
   const pointer = { x: 0, y: 0, targetX: 0, targetY: 0 };
   const canAnimate = () => ready && !failed && !disposed && !userPaused && !reduced.matches;
@@ -76,19 +77,26 @@
     const yaw = staticScene ? 0 : (Math.sin(cycle) * 7 + pointer.x * 8) * settled;
     const pitch = staticScene ? 0 : (Math.sin(cycle + .45) * 1.2 - pointer.y * 3) * settled;
     const roll = staticScene ? 0 : (Math.sin(cycle * 2) * .65 + pointer.x * .75) * settled;
-    const lift = staticScene ? 0 : Math.sin(cycle) * 4 * settled;
+    const lift = staticScene ? 0 : Math.sin(cycle * 2) * 8 * settled;
+    const driftX = staticScene ? 0 : Math.sin(cycle) * 12 * settled;
     const breath = staticScene ? 1 : 1 + Math.sin(cycle) * .006 * settled;
     const scale = Math.exp(Math.log(5.2) * (1 - intro)) * breath;
     // Move the focal point continuously from crown fur (11% height) to the full body.
     const focusY = .11 + .39 * intro;
     const y = (.5 - focusY) * size * scale - lift;
-    body.style.transform = `perspective(1200px) translate3d(0,${y.toFixed(3)}px,0) rotateX(${pitch.toFixed(3)}deg) rotateY(${yaw.toFixed(3)}deg) rotateZ(${roll.toFixed(3)}deg) scale(${scale.toFixed(5)})`;
+    body.style.transform = `perspective(1200px) translate3d(${driftX.toFixed(3)}px,${y.toFixed(3)}px,0) rotateX(${pitch.toFixed(3)}deg) rotateY(${yaw.toFixed(3)}deg) rotateZ(${roll.toFixed(3)}deg) scale(${scale.toFixed(5)})`;
     actor.style.opacity = ready && !failed ? '1' : '0';
     shadow.style.opacity = String(.12 * intro);
     shadow.style.transform = `translate3d(${(-yaw * .28).toFixed(3)}px,0,0) scale(${(1 - lift * .003).toFixed(5)},1)`;
     stage.dataset.heroTime = elapsed.toFixed(3);
     stage.dataset.heroYaw = yaw.toFixed(3);
     stage.dataset.heroScale = scale.toFixed(5);
+    stage.dataset.heroDrift = driftX.toFixed(3);
+    stage.dataset.heroLift = lift.toFixed(3);
+    if (ready && elapsed >= 3 && !introNotified) {
+      introNotified = true;
+      stage.dispatchEvent(new Event('hero-settled'));
+    }
   }
 
   function measure() {

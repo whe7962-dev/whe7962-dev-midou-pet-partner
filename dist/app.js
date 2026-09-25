@@ -29,7 +29,7 @@
   dialog.querySelectorAll('.dialog-close,.dialog-ok').forEach(button=>button.addEventListener('click',()=>dialog.close()));
   dialog.addEventListener('click',event=>{if(event.target===dialog){const box=dialog.getBoundingClientRect();if(event.clientX<box.left||event.clientX>box.right||event.clientY<box.top||event.clientY>box.bottom)dialog.close();}});
 
-  const details={ears:{title:'双耳传感，随时监听。',text:'咪Dou 的双耳，是品牌故事里倾听与回应的象征。把每一个日常信号，放在心上。'},heart:{title:'一宠一档，记得每个日常。',text:'围绕年龄、体重与日常记录，逐步认识你的宠物，让每次沟通多一份上下文。'}};
+  const details={ears:{title:'日常观察，让关心有迹可循。',text:'留意精神、食欲与行为的小变化，宠拍档帮助你整理记录，为后续咨询提供清晰的上下文。'},heart:{title:'一宠一档，记得每个日常。',text:'围绕年龄、体重与日常记录，逐步认识你的宠物，让每次沟通多一份上下文。'}};
   const detail=document.getElementById('hotspotDetail'),hotspots=[...document.querySelectorAll('.hotspot')];
   hotspots.forEach(button=>button.addEventListener('click',()=>{const open=button.getAttribute('aria-expanded')!=='true';hotspots.forEach(b=>b.setAttribute('aria-expanded','false'));detail.hidden=!open;if(open){button.setAttribute('aria-expanded','true');detail.querySelector('strong').textContent=details[button.dataset.detail].title;detail.querySelector('p').textContent=details[button.dataset.detail].text;}}));
   detail.querySelector('button').addEventListener('click',()=>{const active=hotspots.find(b=>b.getAttribute('aria-expanded')==='true');detail.hidden=true;hotspots.forEach(b=>b.setAttribute('aria-expanded','false'));active?.focus();});
