@@ -342,6 +342,59 @@ test('optional sound starts visibly and semantically off', () => {
   assert.match(text(sound), /音效：关/);
 });
 
+test('all three partner CTAs are native safe links to the specified official entry', () => {
+  const triggers = all.filter(node => hasClass(node, 'download-trigger'));
+  assert.equal(triggers.length, 3);
+  for (const trigger of triggers) {
+    assert.equal(trigger.tag, 'a');
+    assert.equal(new URL(trigger.attrs.href).href, 'https://www.foresightx.com.cn/');
+    assert.equal(trigger.attrs.target, '_blank');
+    const rel = (trigger.attrs.rel || '').split(/\s+/);
+    assert.ok(rel.includes('noopener') && rel.includes('noreferrer'));
+    assert.equal(trigger.attrs.onclick, undefined);
+    assert.equal(trigger.attrs.download, undefined);
+    assert.equal(trigger.attrs.role, undefined, 'native link semantics must be preserved');
+    assert.notEqual(trigger.attrs['aria-haspopup'], 'dialog');
+  }
+  const header = all.find(node => node.tag === 'header' && hasClass(node, 'site-header'));
+  assert.equal(triggers.filter(node => inside(node, header)).length, 1);
+  assert.equal(triggers.filter(node => inside(node, byId('mobileMenu'))).length, 1);
+  assert.equal(triggers.filter(node => inside(node, byId('download'))).length, 1);
+});
+
+test('the bottom partner CTA keeps its requested label and does not use a waiting-room dialog', () => {
+  const trigger = all.find(node => hasClass(node, 'download-trigger') && inside(node, byId('download')));
+  assert.ok(hasClass(trigger, 'large-button'));
+  assert.equal(text(trigger).replace(/\s*↗\s*$/, ''), '遇见你的宠拍档');
+  assert.equal(byId('downloadDialog'), undefined);
+  assert.equal(all.some(node => hasClass(node, 'dialog-close') || hasClass(node, 'dialog-ok')), false);
+  assert.doesNotMatch(html, /App 下载入口正在准备中|正式安装包与应用商店地址开放后/);
+  assert.doesNotMatch(app, /downloadDialog|\.showModal\s*\(|\.dialog-close|\.dialog-ok/);
+  assert.doesNotMatch(app, /querySelectorAll\(['"]\.download-trigger['"]\)/,
+    'the former click handler must not intercept the native external links');
+});
+
+test('mobile navigation reverse tabbing reaches its final native link after the CTA conversion', () => {
+  const controls = all.filter(node => ['a', 'button'].includes(node.tag) && inside(node, byId('mobileMenu')));
+  assert.equal(controls.at(-1).tag, 'a');
+  assert.ok(hasClass(controls.at(-1), 'download-trigger'));
+  const handler = app.match(/menuButton\.addEventListener\('keydown',([^\n]+)/)?.[1];
+  assert.ok(handler);
+  assert.match(handler, /e\.key==='Tab'&&e\.shiftKey&&!menu\.hidden/);
+  assert.match(handler, /menu\.querySelectorAll\('a,button'\)/);
+  assert.match(handler, /\.at\(-1\)\?\.focus\(\)/);
+  assert.doesNotMatch(handler, /menu\.querySelector\('button'\)/);
+});
+
+test('README distinguishes the official external entry from this static feature demonstration', () => {
+  const readme = fs.readFileSync(path.join(dist, '../README.md'), 'utf8');
+  assert.match(readme, /https:\/\/www\.foresightx\.com\.cn/);
+  assert.match(readme, /没有连接问诊后端/);
+  assert.match(readme, /不直接提供实际安装包/);
+  assert.match(readme, /不经过本页弹窗/);
+  assert.doesNotMatch(readme, /原生下载信息对话框|下载按钮会展示明确的待开放提示/);
+});
+
 function blockAfter(css, marker) {
   const start = css.indexOf(marker);
   assert.ok(start >= 0, `Missing CSS block: ${marker}`);

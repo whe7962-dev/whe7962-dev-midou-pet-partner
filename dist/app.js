@@ -22,12 +22,7 @@
   document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!menu.hidden){setMenu(false);menuButton.focus();}});
   matchMedia('(min-width:801px)').addEventListener('change',e=>{if(e.matches)setMenu(false);});
   menu.addEventListener('keydown',e=>{if(e.key!=='Tab')return;const links=[menuButton,...menu.querySelectorAll('a,button')],first=links[0],last=links[links.length-1];if(e.shiftKey&&document.activeElement===first){last.focus();e.preventDefault();}else if(!e.shiftKey&&document.activeElement===last){first.focus();e.preventDefault();}});
-  menuButton.addEventListener('keydown',e=>{if(e.key==='Tab'&&e.shiftKey&&!menu.hidden){e.preventDefault();menu.querySelector('button').focus();}});
-
-  const dialog=document.getElementById('downloadDialog');
-  document.querySelectorAll('.download-trigger').forEach(button=>button.addEventListener('click',()=>dialog.showModal()));
-  dialog.querySelectorAll('.dialog-close,.dialog-ok').forEach(button=>button.addEventListener('click',()=>dialog.close()));
-  dialog.addEventListener('click',event=>{if(event.target===dialog){const box=dialog.getBoundingClientRect();if(event.clientX<box.left||event.clientX>box.right||event.clientY<box.top||event.clientY>box.bottom)dialog.close();}});
+  menuButton.addEventListener('keydown',e=>{if(e.key==='Tab'&&e.shiftKey&&!menu.hidden){e.preventDefault();[...menu.querySelectorAll('a,button')].at(-1)?.focus();}});
 
   const details={ears:{title:'日常观察，让关心有迹可循。',text:'留意精神、食欲与行为的小变化，宠拍档帮助你整理记录，为后续咨询提供清晰的上下文。'},heart:{title:'一宠一档，记得每个日常。',text:'围绕年龄、体重与日常记录，逐步认识你的宠物，让每次沟通多一份上下文。'}};
   const detail=document.getElementById('hotspotDetail'),hotspots=[...document.querySelectorAll('.hotspot')];
@@ -68,7 +63,7 @@
   const wakeSpring=()=>{if(!magnetFrame)magnetFrame=requestAnimationFrame(spring);};
   document.addEventListener('pointermove',e=>{if(!fine.matches||motion.matches)return;magnets.forEach(m=>{const r=m.el.getBoundingClientRect();if(!r.width||!r.height)return;const dx=e.clientX-(r.left+r.width/2-m.x),dy=e.clientY-(r.top+r.height/2-m.y);const near=Math.abs(dx)<r.width/2+28&&Math.abs(dy)<r.height/2+26;const strength=.12;m.tx=near?Math.max(-9,Math.min(9,dx*strength)):0;m.ty=near?Math.max(-7,Math.min(7,dy*strength)):0;});wakeSpring();},{passive:true});
   document.addEventListener('pointerleave',()=>{magnets.forEach(m=>{m.tx=0;m.ty=0;});wakeSpring();});
-  document.querySelectorAll('button,.pill-button,.text-link').forEach(button=>{button.addEventListener('pointerdown',()=>button.classList.add('pressed'));['pointerup','pointercancel','pointerleave','blur'].forEach(event=>button.addEventListener(event,()=>button.classList.remove('pressed')));});
+  document.querySelectorAll('button,.pill-button,.large-button,.text-link').forEach(button=>{button.addEventListener('pointerdown',()=>button.classList.add('pressed'));['pointerup','pointercancel','pointerleave','blur'].forEach(event=>button.addEventListener(event,()=>button.classList.remove('pressed')));});
 
   // Spotlight follows the pointer only within each card. Touch retains a quiet center glow.
   document.querySelectorAll('.more-grid article,.ability-visual,.meet-portrait,.floating-card,.moment-card,.hero-shortcuts a').forEach(card=>{

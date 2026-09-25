@@ -1,4 +1,5 @@
 /* Keep the useful part of the product within the first two screens. */
+.download a.large-button{width:fit-content;max-width:100%}.mobile-menu>a.download-trigger{font-size:24px}
 .hero-product{height:88svh;min-height:650px;max-height:850px}
 .hero-product .cinema-stage{inset:82px 0 140px 38%;--cat-size:min(56vh,460px)}
 .hero-asset-fallback{position:absolute;inset:25%;display:grid;place-items:center;text-align:center;font-size:14px;line-height:2;color:#7892a3}.hero-asset-fallback[hidden]{display:none}
