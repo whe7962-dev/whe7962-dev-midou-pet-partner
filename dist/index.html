@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="description" content="认识咪Dou，宠拍档的白绒毛伙伴。28 秒沉浸式开场，把科学养宠与温柔陪伴带进每个日常。">
+  <title>咪Dou · 宠拍档 — 把陪伴，放在身边</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='20' fill='%231b2b3d'/%3E%3Ctext x='10' y='46' fill='white' font-family='Georgia' font-size='44'%3Em%3C/text%3E%3C/svg%3E">
+  <link rel="preload" as="image" href="assets/midou-front.png" fetchpriority="high">
+  <link rel="stylesheet" href="styles.css">
+  <script src="cinematic.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#abilities">跳过开场，查看核心能力</a>
+  <header class="site-header">
+    <a class="brand" href="#home" aria-label="咪Dou 宠拍档首页"><span class="wordmark">miDou<span>®</span></span><span class="brand-divider"></span><span class="brand-cn">宠拍档</span></a>
+    <nav class="desktop-nav" aria-label="主导航"><a href="#meet">认识咪Dou</a><a href="#abilities">五大能力</a><a href="#belief">我们的理念</a></nav>
+    <div class="header-actions"><button class="pill-button download-trigger" type="button">遇见你的伙伴 <span aria-hidden="true">↗</span></button><button class="menu-toggle" aria-controls="mobileMenu" aria-expanded="false" aria-label="打开导航"><span></span><span></span></button></div>
+  </header>
+  <nav class="mobile-menu" id="mobileMenu" aria-label="移动导航" hidden><a href="#meet">认识咪Dou</a><a href="#abilities">五大能力</a><a href="#belief">我们的理念</a><button class="download-trigger">遇见你的伙伴 ↗</button></nav>
+  <main>
+    <h1 class="sr-only">咪Dou · 宠拍档，把陪伴放在身边</h1>
+    <section class="cinema" id="home" aria-label="咪Dou 28 秒品牌开场">
+      <div class="cinema-stage" id="cinemaStage" role="img" aria-label="白绒毛咪Dou：毛发特写、全身展示、悬浮转身、口袋陪伴与群组互动">
+        <div class="stage-light" aria-hidden="true"></div>
+        <div class="stage-camera" id="stageCamera" aria-hidden="true"><div class="actors" id="actors"></div></div>
+        <div class="pocket-scene" id="pocketScene" aria-hidden="true"><img src="assets/midou-pocket.png" alt="" loading="eager"></div>
+        <div class="film-copy" id="filmCopy" aria-hidden="true"><span class="film-copy-en" id="filmCopyEn"></span><h1 id="filmCopyTitle"></h1></div>
+        <div class="cinema-intro" id="cinemaIntro"><span class="eyebrow">A LITTLE PRESENCE. A LOT OF LOVE.</span><p>每一根绒毛，<br>都有温柔的理由。</p></div>
+        <span class="frame-note" id="frameNote" aria-hidden="true">01 / THE FIRST HELLO</span>
+        <div class="loading" id="filmLoading" role="status"><span class="loading-orbit"></span><span>咪Dou 正在向你走来</span></div>
+      </div>
+      <div class="cinema-bottom">
+        <div class="film-controls" aria-label="开场播放控制">
+          <button class="control-button" id="playPause" type="button" aria-label="暂停开场"><svg class="pause-icon" viewBox="0 0 20 20" aria-hidden="true"><path d="M7 5v10M13 5v10"/></svg><svg class="play-icon" viewBox="0 0 20 20" aria-hidden="true"><path d="m7 4 9 6-9 6Z"/></svg></button>
+          <span class="timecode" id="timecode" aria-hidden="true">00:00 <i>/ 00:28</i></span>
+          <label class="sr-only" for="filmSeek">开场进度（秒）</label><input type="range" id="filmSeek" min="0" max="28" value="0" step="0.05" aria-valuetext="0 秒，共 28 秒">
+          <button class="control-button replay" id="replay" aria-label="重播开场" title="重播">↻</button>
+          <span class="film-format">28″ BRAND FILM</span>
+        </div>
+        <a class="scroll-link" href="#meet">认识你的新伙伴 <span aria-hidden="true">↓</span></a>
+      </div>
+      <nav class="film-chapters" aria-label="开场章节"><button data-time="1.3" aria-label="跳转至 1.3 秒，初次见面">01 <span>初次见面</span></button><button data-time="8.2" aria-label="跳转至 8.2 秒，细节之美">02 <span>细节之美</span></button><button data-time="12.8" aria-label="跳转至 12.8 秒，随身陪伴">03 <span>随身陪伴</span></button><button data-time="18" aria-label="跳转至 18 秒，温柔相遇">04 <span>温柔相遇</span></button><button data-time="24.5" aria-label="跳转至 24.5 秒，每份偏爱">05 <span>每份偏爱</span></button></nav>
+      <noscript><div class="no-script"><img src="assets/midou-front.png" alt="纯白绒毛咪Dou猫咪"><p>咪Dou，天生专业。</p></div></noscript>
+    </section>
+
+    <section class="meet section-shell" id="meet" aria-labelledby="meetTitle">
+      <div class="meet-heading reveal"><p class="eyebrow">01 — MEET YOUR LITTLE COMPANION</p><h2 id="meetTitle">小小的它。<br>大大的<span class="serif">在意。</span></h2><p class="section-lead">柔软，是第一印象。<br>懂你和它，才是陪伴的意义。</p></div>
+      <div class="meet-portrait reveal" id="meetPortrait"><span class="portrait-word" aria-hidden="true">miDou</span><div class="portrait-halo" aria-hidden="true"></div><img src="assets/midou-front.png" alt="圆头、短腿、白色绒毛的咪Dou" loading="lazy"><span class="portrait-label">YOUR POCKET COMPANION</span><button class="hotspot ear" data-detail="ears" aria-label="了解双耳传感" aria-expanded="false">+<span>双耳传感</span></button><button class="hotspot heart" data-detail="heart" aria-label="了解一宠一档" aria-expanded="false">+<span>记得每个日常</span></button><div class="hotspot-detail" id="hotspotDetail" hidden><button aria-label="关闭详情">×</button><strong></strong><p></p></div></div>
+      <div class="meet-caption reveal"><span class="thin-cross" aria-hidden="true">+</span><p>宠拍档，把专业的养宠知识，<br>变成随时可用的温柔支持。</p><a class="text-link" href="#abilities">从一次关心开始 <span aria-hidden="true">↗</span></a></div>
+    </section>
+
+    <section class="metrics section-shell" aria-label="宠拍档日常陪伴"><div class="reveal"><span class="metric-number">24<span>h</span></span><p>你的担心，随时有回应</p></div><div class="reveal"><span class="metric-number">05</span><p>核心能力，照顾每个日常</p></div><div class="reveal"><span class="metric-number">01</span><p>一宠一档，记住每次变化</p></div><div class="metric-note reveal"><span class="eyebrow">MADE FOR EVERYDAY CARE</span><p>让爱多一份依据。<br>让陪伴少一点猜测。</p></div></section>
+
+    <section class="abilities section-shell" id="abilities" aria-labelledby="abilitiesTitle">
+      <div class="section-heading reveal"><div><p class="eyebrow">02 — A LITTLE HELP, EVERY DAY</p><h2 id="abilitiesTitle">有些关心，<br>可以更<span class="serif">专业。</span></h2></div><p class="section-lead">从第一声担心，到每一天的安心。<br>五种能力，让科学养宠触手可及。</p></div>
+      <div class="ability-layout reveal">
+        <div class="ability-list" role="tablist" aria-label="选择养宠能力" aria-orientation="vertical">
+          <button class="ability-tab" id="abilityTab0" role="tab" aria-selected="true" aria-controls="abilityPanel" tabindex="0" data-ability="0"><span>01</span><div><h3>快速问诊</h3><p>从一张照片，开始了解。</p></div><b aria-hidden="true">↗</b></button>
+          <button class="ability-tab" id="abilityTab1" role="tab" aria-selected="false" aria-controls="abilityPanel" tabindex="-1" data-ability="1"><span>02</span><div><h3>疾病咨询</h3><p>把担心，说给懂它的伙伴听。</p></div><b aria-hidden="true">↗</b></button>
+          <button class="ability-tab" id="abilityTab2" role="tab" aria-selected="false" aria-controls="abilityPanel" tabindex="-1" data-ability="2"><span>03</span><div><h3>营养方案</h3><p>每一口，都更适合它。</p></div><b aria-hidden="true">↗</b></button>
+          <button class="ability-tab" id="abilityTab3" role="tab" aria-selected="false" aria-controls="abilityPanel" tabindex="-1" data-ability="3"><span>04</span><div><h3>养宠百科</h3><p>小问题，也有认真的回答。</p></div><b aria-hidden="true">↗</b></button>
+          <button class="ability-tab" id="abilityTab4" role="tab" aria-selected="false" aria-controls="abilityPanel" tabindex="-1" data-ability="4"><span>05</span><div><h3>提取文字</h3><p>复杂报告，先抓住重点。</p></div><b aria-hidden="true">↗</b></button>
+        </div>
+        <div class="ability-visual" role="tabpanel" id="abilityPanel" aria-labelledby="abilityTab0" tabindex="0"><div class="visual-orbit" aria-hidden="true"></div><span class="visual-watermark" id="visualWatermark" aria-hidden="true">CARE</span><div class="phone"><div class="phone-island" aria-hidden="true"></div><div class="phone-header"><span>宠拍档</span><span class="phone-mark" aria-hidden="true">✧</span></div><div class="phone-greeting"><small>每一份在意，都有回应</small><h4 id="demoTitle">今天，想了解它的哪里？</h4></div><div class="scan-photo"><img src="assets/midou-front.png" alt="咪Dou功能界面示意" loading="lazy"><span class="scan-corner tl"></span><span class="scan-corner tr"></span><span class="scan-corner bl"></span><span class="scan-corner br"></span><div class="scan-line" aria-hidden="true"></div></div><div class="demo-tags" id="demoTags"><span>眼部</span><span>耳部</span><span>皮肤</span></div><p class="phone-action" id="demoAction">拍摄照片 <span>＋</span></p><div class="phone-home" aria-hidden="true"></div></div><div class="floating-card"><span class="card-icon" aria-hidden="true">✧</span><div><strong id="featureTitle">看见细微信号</strong><p id="featureText">关注每一次变化，整理观察重点。</p></div></div><span class="demo-caption">功能界面示意</span></div>
+      </div>
+      <div class="ability-caption"><button class="autoplay-toggle" id="featureAutoplay" type="button" aria-pressed="false">暂停自动切换</button><p class="care-note">健康分析用于辅助日常观察与沟通，不能代替兽医诊断。出现紧急症状时，请及时就医。</p></div>
+    </section>
+
+    <section class="details" id="details"><div class="detail-photo"><div class="detail-cat" aria-hidden="true"></div><div class="detail-light"></div></div><div class="detail-copy reveal"><p class="eyebrow">THE BEAUTY IS IN THE DETAILS</p><h2>可爱，<br>也有<span class="serif">质感。</span></h2><p>细密绒毛，圆润轮廓。<br>从靠近的第一刻，<br>就想把它放在身边。</p><button class="text-link" id="replayDetail">再看一次细节 <span>↗</span></button></div><span class="detail-footnote">咪Dou · 角色概念展示</span></section>
+
+    <section class="more section-shell"><div class="section-heading reveal"><div><p class="eyebrow">03 — MORE WAYS TO UNDERSTAND</p><h2>它没说出口的，<br>我们也<span class="serif">在听。</span></h2></div></div><div class="more-grid"><article class="reveal"><span class="more-symbol" aria-hidden="true">〰</span><span class="tiny-label">LISTEN</span><h3>宠语翻译</h3><p>结合声音与生活情境，读懂更多情绪线索。</p></article><article class="reveal"><span class="more-symbol" aria-hidden="true">◌</span><span class="tiny-label">UNDERSTAND</span><h3>情绪识别</h3><p>关注姿态与互动，理解它此刻需要什么。</p></article><article class="reveal"><span class="more-symbol" aria-hidden="true">✧</span><span class="tiny-label">REMEMBER</span><h3>多智能体管家</h3><p>围绕健康、营养与行为，让关心彼此协作。</p></article></div></section>
+
+    <section class="belief section-shell" id="belief"><p class="eyebrow reveal">04 — OUR BELIEF</p><blockquote class="reveal">它的世界很小。<br>小到，<span class="serif">只有你。</span></blockquote><div class="belief-bottom reveal"><div class="belief-line"></div><p>好的科技，是让理解更早发生。<br>宠拍档，用专业接住每一次在意。</p><img src="assets/midou-front.png" alt="静静陪伴的咪Dou" loading="lazy"></div></section>
+
+    <section class="download section-shell" id="download"><div class="download-top reveal"><p class="eyebrow">ALWAYS A LITTLE CLOSER</p><h2>把好心情，<br><span class="serif">随身带。</span></h2><button class="large-button download-trigger">遇见你的宠拍档 <span aria-hidden="true">↗</span></button></div><div class="download-cat" aria-hidden="true"><img src="assets/midou-front.png" alt="" loading="lazy"></div><footer><a class="wordmark" href="#home">miDou<span>®</span></a><p>© 2026 宠拍档 · 咪Dou</p><a id="sourceLink" class="source-link" href="https://github.com/whe7962-dev/whe7962-dev-midou-pet-partner" target="_blank" rel="noopener noreferrer">GitHub · 开源代码 ↗</a><a href="#home">回到顶部 ↑</a></footer></section>
+  </main>
+  <dialog id="downloadDialog"><button class="dialog-close" aria-label="关闭下载信息">×</button><span class="eyebrow">PET PARTNER</span><h2>很快，<br>来到你身边。</h2><p>App 下载入口正在准备中。正式安装包与应用商店地址开放后，将在这里更新。</p><button class="pill-button dialog-ok">知道了</button></dialog>
+</body>
+</html>
