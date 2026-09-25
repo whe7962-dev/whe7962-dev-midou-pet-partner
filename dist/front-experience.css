@@ -62,6 +62,9 @@
 @media(prefers-reduced-motion:reduce){.moment-image img{transition:none;transform:none!important}.hero-orbit{display:none}}
 
 /* Pet Partner is the product; miDou is its supporting mascot. */
+.hero-product .hero-shard-field{z-index:0;opacity:.68;pointer-events:none;-webkit-mask-image:linear-gradient(180deg,transparent 8%,#000 22%,#000 77%,transparent 96%);mask-image:linear-gradient(180deg,transparent 8%,#000 22%,#000 77%,transparent 96%)}
+.hero-shard-field:after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,#ffffffb8 0%,#ffffff70 35%,#ffffff08 63%,#ffffff40 100%)}
+@media(max-width:800px){.hero-product .hero-shard-field{opacity:.48;-webkit-mask-image:linear-gradient(180deg,transparent 8%,#000 27%,#000 77%,transparent 94%);mask-image:linear-gradient(180deg,transparent 8%,#000 27%,#000 77%,transparent 94%)}.hero-shard-field:after{background:linear-gradient(180deg,#ffffff80 0%,#ffffffb8 30%,#ffffff10 56%,#ffffff40 100%)}}
 .pet-wordmark{font-family:var(--sans);font-size:29px;font-weight:650;letter-spacing:-.06em}.brand-en{font-size:9px;font-weight:500;letter-spacing:.14em}
 .moments-grid{grid-template-columns:repeat(6,minmax(0,1fr))}.moment-card{grid-column:span 2}.moment-card:nth-child(-n+2){grid-column:span 3}.moment-card:nth-last-child(-n+2){grid-column:span 3}
 .moment-card:nth-child(n+3) .moment-copy h3{font-size:21px}.moment-card:nth-child(n+3) .moment-copy{padding:21px}.moment-card:nth-child(n+3) .moment-copy p{font-size:10px}

@@ -1,0 +1,9 @@
+/* Own glyph classes avoid the shared reveal/letter animation rules. */
+#heroTitle[data-title-enhanced=true] .letter-shell{display:inline-block;position:relative;vertical-align:baseline;white-space:pre}
+#heroTitle[data-title-enhanced=true] .title-letter{display:inline-block;position:relative;vertical-align:baseline;transform:translate3d(0,var(--title-y,0px),0) rotate(var(--title-turn,0deg));transform-origin:50% 75%;opacity:1;transition:none}
+#heroTitle[data-title-enhanced=true][data-title-motion=playing] .title-letter{will-change:transform}
+/* Keep solid, readable letterforms; the ice-blue sweep is only a soft outer light. */
+.hero-copy #heroTitle .serif{color:#54758a}
+#heroTitle[data-title-enhanced=true] .serif .title-letter{text-shadow:0 0 13px rgba(111,181,219,var(--title-glow,0)),0 0 3px rgba(140,203,235,var(--title-glow,0))}
+#heroTitle[data-title-motion=static] .title-letter{transform:none;text-shadow:none;will-change:auto}
+@media(prefers-reduced-motion:reduce){#heroTitle[data-title-enhanced=true] .title-letter{transform:none!important;text-shadow:none!important;will-change:auto!important}}

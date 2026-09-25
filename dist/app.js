@@ -5,7 +5,7 @@
   const fine = matchMedia('(hover: hover) and (pointer: fine)');
 
   // Character entrance: short Chinese phrases share a restrained 38 ms rhythm.
-  document.querySelectorAll('.hero-copy h1,.meet h2,.section-heading h2,.belief blockquote,.download h2,.detail-copy h2').forEach(heading=>{
+  document.querySelectorAll('.meet h2,.section-heading h2,.belief blockquote,.download h2,.detail-copy h2').forEach(heading=>{
     const text=heading.textContent;heading.setAttribute('aria-label',text);
     const walker=document.createTreeWalker(heading,NodeFilter.SHOW_TEXT);const nodes=[];let node;
     while((node=walker.nextNode()))nodes.push(node);

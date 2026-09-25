@@ -69,6 +69,54 @@ test('the only primary heading leads with scientific pet care and Pet Partner', 
   assert.ok(inside(headings[0], byId('home')));
 });
 
+test('the hero has its own decorative shard canvas behind the existing content', () => {
+  const hero = byId('home');
+  const field = byId('heroShardField');
+  const copy = all.find(node => hasClass(node, 'hero-copy') && inside(node, hero));
+  assert.ok(field, 'Missing hero shard background');
+  assert.equal(field.parent, hero);
+  assert.ok(hasClass(field, 'aero-shards'));
+  assert.equal(field.attrs['aria-hidden'], 'true');
+  assert.equal(field.attrs['data-ready'], 'false');
+  assert.equal(all.filter(node => node.tag === 'canvas' && inside(node, field)).length, 1);
+  assert.equal(all.some(node => inside(node, field) && (['button', 'a', 'input'].includes(node.tag) || 'tabindex' in node.attrs)), false);
+  assert.ok(copy);
+  assert.ok(hero.children.indexOf(field) < hero.children.indexOf(copy));
+  assert.ok(inside(byId('heroTitle'), copy));
+  assert.ok(inside(byId('heroMotionToggle'), hero));
+  assert.equal(inside(byId('heroTitle'), field), false);
+});
+
+test('hero title and background controllers are loaded once with their required styles', () => {
+  const scripts = all.filter(node => node.tag === 'script');
+  for (const name of ['hero-background.js', 'hero-title.js']) {
+    const matches = scripts.filter(node => node.attrs.src === name);
+    assert.equal(matches.length, 1, `${name} must be referenced once`);
+    if (name === 'hero-background.js') assert.equal(matches[0].attrs.type, 'module');
+    else assert.ok('defer' in matches[0].attrs);
+  }
+  assert.ok(scripts.findIndex(node => node.attrs.src === 'app.js') < scripts.findIndex(node => node.attrs.src === 'hero-title.js'));
+  const styles = all.filter(node => node.tag === 'link' && node.attrs.rel === 'stylesheet').map(node => node.attrs.href);
+  assert.equal(styles.filter(name => name === 'hero-title.css').length, 1);
+  assert.ok(styles.includes('aero-shards.css'));
+  assert.ok(styles.indexOf('hero-title.css') > styles.indexOf('front-experience.css'));
+});
+
+test('hero shards do not replace the three-card background or create a separate demo screen', () => {
+  const fields = all.filter(node => hasClass(node, 'aero-shards'));
+  assert.deepEqual(fields.map(node => node.attrs.id).sort(), ['heroShardField', 'shardField']);
+  assert.notEqual(byId('heroShardField'), byId('shardField'));
+  assert.ok(inside(byId('heroShardField'), byId('home')));
+  assert.ok(inside(byId('shardField'), byId('technology')));
+  assert.equal(inside(byId('shardField'), byId('home')), false);
+  const cards = all.filter(node => node.tag === 'article' && inside(node, byId('shardStage')));
+  assert.equal(cards.length, 3);
+  assert.ok(inside(byId('insightTitle'), byId('shardStage')));
+  assert.equal(all.filter(node => hasClass(node, 'shard-stage')).length, 1);
+  assert.equal(all.some(node => node.tag === 'section' && hasClass(node, 'technology')), false);
+  assert.equal(all.some(node => hasClass(node, 'shard-toolbar') || hasClass(node, 'shard-flow-controls')), false);
+});
+
 test('IDs are unique and ARIA control/label references resolve', () => {
   const ids = all.filter(node => node.attrs.id).map(node => node.attrs.id);
   assert.equal(new Set(ids).size, ids.length, `Duplicate IDs: ${ids.filter((id, index) => ids.indexOf(id) !== index).join(', ')}`);
@@ -168,6 +216,28 @@ test('all seven lifestyle photos are distinct, outside diagnosis UI and captione
   for (const image of all.filter(node => node.tag === 'img')) {
     assert.doesNotMatch(image.attrs.alt || '', /医生|兽医|听诊|诊疗|doctor|diagnos|clinic/i);
     assert.doesNotMatch(image.attrs.src || '', /doctor|medical|diagnos|codex-clipboard/i);
+  }
+});
+
+test('gallery motion resources are referenced once and all seven photo explanations remain in HTML', () => {
+  const script = all.filter(node => node.tag === 'script' && node.attrs.src === 'gallery-motion.js');
+  assert.equal(script.length, 1);
+  assert.ok('defer' in script[0].attrs);
+  const styles = all.filter(node => node.tag === 'link' && node.attrs.rel === 'stylesheet').map(node => node.attrs.href);
+  assert.equal(styles.filter(name => name === 'gallery-motion.css').length, 1);
+  assert.ok(styles.indexOf('gallery-motion.css') > styles.indexOf('front-experience.css'));
+  const cards = all.filter(node => hasClass(node, 'moment-card') && inside(node, byId('moments')));
+  assert.equal(cards.length, 7);
+  for (const card of cards) {
+    const copies = all.filter(node => hasClass(node, 'moment-copy') && inside(node, card));
+    assert.equal(copies.length, 1);
+    const copy = copies[0];
+    assert.equal(copy.attrs.hidden, undefined);
+    assert.notEqual(copy.attrs['aria-hidden'], 'true');
+    const heading = all.find(node => node.tag === 'h3' && inside(node, copy));
+    const description = all.find(node => node.tag === 'p' && inside(node, copy));
+    assert.ok(heading && text(heading).length > 3, 'A photograph lost its heading');
+    assert.ok(description && text(description).length > 5, 'A photograph lost its explanation');
   }
 });
 

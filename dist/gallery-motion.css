@@ -1,0 +1,41 @@
+/* Captions stay readable on the image, including touch and no-JavaScript views. */
+.moments .moment-card{display:grid;align-items:end;min-height:360px;border:0;border-radius:18px;background:#213644;isolation:isolate;box-shadow:0 10px 32px #162e3e09;transform-origin:center;transition:opacity .8s,transform .6s cubic-bezier(.2,.7,.2,1),box-shadow .6s}
+.moments .moment-card:nth-child(-n+2),.moments .moment-card:nth-last-child(-n+2){min-height:430px}
+.moments .moment-card:before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(180deg,#0e243200 23%,#0e24321a 43%,#0e2432b8 72%,#0e2432f2 100%)}
+.moments .moment-image{position:absolute;inset:0;width:100%;height:100%;aspect-ratio:auto;overflow:hidden}
+.moments .moment-image img{width:100%;height:100%;object-fit:cover;object-position:center 38%;transform:translate3d(var(--photo-x,0px),var(--photo-y,0px),0) scale(1.035);transition:transform 1.5s cubic-bezier(.2,.65,.2,1);filter:saturate(.93)}
+.moments .moment-card:first-child img{object-position:center 30%}
+.moments .moment-card:nth-child(5) img{object-position:63% center}
+.moments .moment-copy,.moments .moment-card:nth-child(n+3) .moment-copy{position:relative;z-index:2;align-self:end;background:none;padding:28px 28px 27px;color:#fff;text-shadow:0 2px 15px #06121c40}
+.moments .moment-copy>span{display:inline-block;color:#d7eaf5;font-size:9px;letter-spacing:.17em;border-top:1px solid #d7eaf573;padding-top:12px}
+.moments .moment-copy h3,.moments .moment-card:nth-child(n+3) .moment-copy h3{font-size:clamp(23px,2.3vw,32px);font-weight:450;line-height:1.45;color:white;margin-top:13px;transition:translate .5s cubic-bezier(.2,.7,.2,1)}
+.moments .moment-card:nth-child(n+3):nth-child(-n+5) .moment-copy h3{font-size:24px}
+.moments .moment-copy h3{ text-wrap:balance }.moments .moment-copy h3 br{display:initial}
+.moments .moment-copy p,.moments .moment-card:nth-child(n+3) .moment-copy p{color:#e7f1f6;font-size:12px;line-height:1.7;align-items:center;gap:14px;margin-top:13px}
+.moments .moment-copy b{display:grid;place-items:center;width:31px;height:31px;flex:none;border:1px solid #e5f2fa66;border-radius:50%;font-size:18px;transition:background .3s,translate .5s}
+.moments .moment-card:focus-visible{outline:3px solid #78abc4;outline-offset:5px}
+.moments .moment-card:focus-visible .moment-copy b{background:#d7ebf238;translate:2px -2px}
+html.js .moments .moment-card.reveal:not(.in) img{transform:scale(1.12)}
+html.js .moments .moment-card.reveal.in{transform:perspective(1000px) rotateX(var(--card-rx,0deg)) rotateY(var(--card-ry,0deg)) translateY(var(--card-lift,0px))}
+@media(hover:hover) and (pointer:fine){
+ .moments .moment-card:hover{--card-lift:-5px;box-shadow:0 22px 44px #132f4224}
+ .moments .moment-card:hover img,.moments .moment-card:focus-visible img{transform:translate3d(var(--photo-x,0px),var(--photo-y,0px),0) scale(1.09)}
+ .moments .moment-card:hover h3{translate:0 -4px}.moments .moment-card:hover .moment-copy b{background:#d7ebf238;translate:2px -2px}
+}
+@media(max-width:800px){
+ .moments .moment-card,.moments .moment-card:nth-child(-n+2),.moments .moment-card:nth-last-child(-n+2){min-height:360px}
+ .moments .moment-copy,.moments .moment-card:nth-child(n+3) .moment-copy{padding:23px 21px}
+ .moments .moment-copy h3,.moments .moment-card:nth-child(n+3) .moment-copy h3{font-size:24px}
+ .moments .moment-copy p,.moments .moment-card:nth-child(n+3) .moment-copy p{font-size:11px}
+ .moments .moment-card:active{scale:.992}.moments .moment-card:active .moment-copy b{background:#d7ebf238}
+}
+@media(max-width:600px){
+ .moments .moments-grid{grid-template-columns:minmax(0,1fr);gap:20px}
+ .moments .moment-card,.moments .moment-card:nth-child(-n+2),.moments .moment-card:nth-last-child(-n+2){grid-column:span 1;min-height:380px}
+}
+@media(prefers-reduced-motion:reduce){
+ .moments .moment-card,.moments .moment-image img,.moments .moment-copy h3,.moments .moment-copy b{transition:none!important}
+ .moments .moment-card,html.js .moments .moment-card.reveal.in{transform:none!important;scale:none!important}
+ .moments .moment-image img,html.js .moments .moment-card.reveal:not(.in) img{transform:none!important}
+ .moments .moment-copy h3,.moments .moment-copy b{translate:none!important}
+}

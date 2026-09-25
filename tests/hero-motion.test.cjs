@@ -95,7 +95,7 @@ test('hero waits for its only required portrait, then autoplays without manual t
   h.load();
   assert.equal(h.ids.filmLoading.hidden, true);
   assert.equal(h.ids.cinemaStage.dataset.motion, 'playing');
-  assert.equal(h.ids.heroMotionToggle.textContent, '暂停慢转');
+  assert.equal(h.ids.heroMotionToggle.textContent, '暂停动效');
   assert.equal(h.raf.size, 1);
   assert.deepEqual(Object.keys(h.window.midouHeroMotion), ['pause', 'resume', 'dispose']);
   assert.equal(h.timers.size, 0);
@@ -157,7 +157,7 @@ test('pause freezes the portrait and pointer response; resume continues without 
   const h = harness(); h.load(); h.frame(); h.advance(4);
   h.ids.heroMotionToggle.emit('click');
   assert.equal(h.ids.heroMotionToggle.getAttribute('aria-pressed'), 'true');
-  assert.equal(h.ids.heroMotionToggle.textContent, '继续慢转');
+  assert.equal(h.ids.heroMotionToggle.textContent, '继续动效');
   const snapshot = h.body.style.transform;
   const time = h.ids.cinemaStage.dataset.heroTime;
   h.pointer(1, 1); h.frame(30000);

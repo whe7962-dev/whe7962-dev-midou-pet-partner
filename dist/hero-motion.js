@@ -63,10 +63,10 @@
     toggle.disabled = !ready || failed || reduced.matches;
     toggle.setAttribute('aria-pressed', String(userPaused || reduced.matches || failed));
     toggle.classList.toggle('paused', userPaused || reduced.matches || failed);
-    const label = failed ? '图片暂未载入' : !ready ? '正在加载' : reduced.matches ? '已减少动态' : userPaused ? '继续慢转' : '暂停慢转';
+    const label = failed ? '图片暂未载入' : !ready ? '正在加载' : reduced.matches ? '已减少动态' : userPaused ? '继续动效' : '暂停动效';
     toggle.textContent = label;
-    toggle.setAttribute('aria-label', reduced.matches && !failed ? '遵循减少动态设置，白猫静态展示' : label);
-    toggle.title = failed ? '图片暂未载入，其他内容可正常使用' : reduced.matches ? '已遵循系统减少动态效果偏好' : '';
+    toggle.setAttribute('aria-label', reduced.matches && !failed ? '遵循减少动态设置，首屏静态展示' : label);
+    toggle.title = failed ? '图片暂未载入，其他内容可正常使用' : reduced.matches ? '已遵循系统减少动态效果偏好' : '同时控制白猫、标题与首屏背景动态';
   }
 
   function render() {

@@ -13,11 +13,16 @@
   <script src="interaction-sound.js" defer></script>
   <link rel="stylesheet" href="hero-motion.css">
   <script src="app.js" defer></script>
+  <script src="hero-title.js" defer></script>
+  <script src="gallery-motion.js" defer></script>
   <script src="cat-life.js" defer></script>
   <link rel="stylesheet" href="cat-life.css">
   <link rel="stylesheet" href="aero-shards.css">
   <link rel="stylesheet" href="front-experience.css">
+  <link rel="stylesheet" href="hero-title.css">
+  <link rel="stylesheet" href="gallery-motion.css">
   <script type="module" src="aero-experience.js"></script>
+  <script type="module" src="hero-background.js"></script>
 </head>
 <body>
   <a class="skip-link" href="#abilities">跳过开场，查看核心能力</a>
@@ -29,6 +34,7 @@
   <nav class="mobile-menu" id="mobileMenu" aria-label="移动导航" hidden><a href="#meet">认识宠拍档</a><a href="#abilities">五大能力</a><a href="#belief">我们的理念</a><button class="download-trigger">遇见你的伙伴 ↗</button></nav>
   <main>
     <section class="cinema hero-product" id="home" aria-labelledby="heroTitle">
+      <div class="aero-shards hero-shard-field" id="heroShardField" data-ready="false" aria-hidden="true"><canvas class="aero-shards__canvas"></canvas></div>
       <div class="hero-copy reveal"><p class="eyebrow">PET PARTNER · AI FOR EVERYDAY CARE</p><h1 id="heroTitle">科学养宠，<br><span class="serif">有宠拍档。</span></h1><p class="hero-lead">全能科学养宠智能伙伴。<br>从健康咨询到营养照顾，让每一份关心更有依据。</p><div class="hero-actions"><a class="pill-button" href="#abilities">探索五大能力 <span aria-hidden="true">↗</span></a><a class="text-link" href="#moments">看看它的日常 <span aria-hidden="true">↓</span></a></div><div class="hero-proof"><span><b>24h</b> 随时陪伴</span><span><b>一宠一档</b> 记住变化</span></div></div>
       <div class="cinema-stage" id="cinemaStage" role="img" aria-label="白绒毛咪Dou缓慢悬浮，轻柔转动并随鼠标改变观看角度">
         <div class="stage-light" aria-hidden="true"></div><div class="hero-orbit orbit-one" aria-hidden="true"></div><div class="hero-orbit orbit-two" aria-hidden="true"></div>
