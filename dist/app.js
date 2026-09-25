@@ -5,7 +5,7 @@
   const fine = matchMedia('(hover: hover) and (pointer: fine)');
 
   // Character entrance: short Chinese phrases share a restrained 38 ms rhythm.
-  document.querySelectorAll('.meet h2,.section-heading h2,.belief blockquote,.download h2,.detail-copy h2').forEach(heading=>{
+  document.querySelectorAll('.hero-copy h1,.meet h2,.section-heading h2,.belief blockquote,.download h2,.detail-copy h2').forEach(heading=>{
     const text=heading.textContent;heading.setAttribute('aria-label',text);
     const walker=document.createTreeWalker(heading,NodeFilter.SHOW_TEXT);const nodes=[];let node;
     while((node=walker.nextNode()))nodes.push(node);
@@ -42,12 +42,21 @@
     {word:'READ',title:'把报告里的重点留下。',tags:['检验报告','说明文字','宠物档案'],action:'上传报告照片',feature:'重要信息，不遗漏',text:'提取文字，帮助整理每一次记录。',color:'#eaf1f5'}
   ];
   const tabs=[...document.querySelectorAll('.ability-tab')],panel=document.getElementById('abilityPanel');
+  const compactTabs=matchMedia('(max-width:800px)');
+  const setTabOrientation=()=>document.querySelector('.ability-list').setAttribute('aria-orientation',compactTabs.matches?'horizontal':'vertical');
+  compactTabs.addEventListener('change',setTabOrientation);setTabOrientation();
   let active=0,featureTimer=0,userInteracting=false,featureVisible=false;
   const autoplayButton=document.getElementById('featureAutoplay');
   function choose(index,focus=false){active=(index+5)%5;const f=features[active];tabs.forEach((b,i)=>{b.setAttribute('aria-selected',String(i===active));b.tabIndex=i===active?0:-1;});panel.setAttribute('aria-labelledby',tabs[active].id);document.getElementById('visualWatermark').textContent=f.word;document.getElementById('demoTitle').textContent=f.title;const tags=document.getElementById('demoTags');tags.replaceChildren(...f.tags.map(t=>{const s=document.createElement('span');s.textContent=t;return s;}));document.getElementById('demoAction').textContent=f.action+' ＋';document.getElementById('featureTitle').textContent=f.feature;document.getElementById('featureText').textContent=f.text;panel.style.backgroundColor=f.color;if(focus){tabs[active].focus();tabs[active].scrollIntoView({behavior:motion.matches?'instant':'smooth',block:'nearest',inline:'nearest'});}}
   function scheduleFeatures(){clearInterval(featureTimer);autoplayButton.disabled=motion.matches;autoplayButton.textContent=motion.matches?'已减少动态效果':userInteracting?'继续自动切换':'暂停自动切换';autoplayButton.setAttribute('aria-pressed',String(userInteracting||motion.matches));if(!motion.matches&&featureVisible&&!userInteracting&&!document.hidden)featureTimer=setInterval(()=>choose(active+1),6500);}
   autoplayButton.addEventListener('click',()=>{userInteracting=!userInteracting;scheduleFeatures();});
   tabs.forEach((tab,i)=>{tab.addEventListener('click',()=>{choose(i);userInteracting=true;scheduleFeatures();});tab.addEventListener('keydown',e=>{let next=null;if(['ArrowDown','ArrowRight'].includes(e.key))next=active+1;if(['ArrowUp','ArrowLeft'].includes(e.key))next=active-1;if(e.key==='Home')next=0;if(e.key==='End')next=4;if(next!==null){e.preventDefault();userInteracting=true;choose(next,true);scheduleFeatures();}});});
+  // Real anchor links remain usable without JS; with JS they also select the matching capability.
+  document.querySelectorAll('[data-feature-jump]').forEach(link=>link.addEventListener('click',()=>{
+    const index=Number(link.dataset.featureJump);
+    if(!Number.isInteger(index)||index<0||index>=features.length)return;
+    choose(index);userInteracting=true;scheduleFeatures();
+  }));
   new IntersectionObserver(entries=>{featureVisible=entries[0].isIntersecting;scheduleFeatures();},{threshold:.35}).observe(panel);
   document.addEventListener('visibilitychange',scheduleFeatures);
 
@@ -62,7 +71,7 @@
   document.querySelectorAll('button,.pill-button,.text-link').forEach(button=>{button.addEventListener('pointerdown',()=>button.classList.add('pressed'));['pointerup','pointercancel','pointerleave','blur'].forEach(event=>button.addEventListener(event,()=>button.classList.remove('pressed')));});
 
   // Spotlight follows the pointer only within each card. Touch retains a quiet center glow.
-  document.querySelectorAll('.more-grid article,.ability-visual,.meet-portrait,.floating-card').forEach(card=>{
+  document.querySelectorAll('.more-grid article,.ability-visual,.meet-portrait,.floating-card,.moment-card,.hero-shortcuts a').forEach(card=>{
     card.classList.add('spotlight');
     card.addEventListener('pointermove',e=>{if(!fine.matches||motion.matches)return;const box=card.getBoundingClientRect();card.style.setProperty('--spot-x',`${e.clientX-box.left}px`);card.style.setProperty('--spot-y',`${e.clientY-box.top}px`);card.classList.add('lit');});
     card.addEventListener('pointerleave',()=>card.classList.remove('lit','touched'));

@@ -1,0 +1,13 @@
+{
+  "name": "midou-pet-partner",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "vendor": "node scripts/vendor-vgpu.mjs",
+    "test": "node --test tests/*.test.cjs"
+  },
+  "devDependencies": {
+    "esbuild": "0.25.11",
+    "vgpu": "0.3.1"
+  }
+}
